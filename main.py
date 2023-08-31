@@ -1,11 +1,14 @@
 import copy
+
+# Spot class to store coordinates, value and possible values (for empty spots) 
 class Spot:
     def __init__(self, i, j, val):
         self.i = i
         self.j = j
         self.val = val
         self.possible = []
-        
+
+# process file and generate grid of spots
 def get_grid(filename):
     all_grids = []
     
@@ -24,6 +27,7 @@ def get_grid(filename):
     
     return all_grids
 
+# function to print formatted grid
 def print_grid(grid):
     for i, row in enumerate(grid):
         if i % 3 == 0:
@@ -40,6 +44,7 @@ def print_grid(grid):
     print(19*"-")
     return
 
+# function to extract all possible values that can be placed at a certain spot in the grid
 def get_possible(i, j, grid):
     possible = [True] * 10
     # check row
@@ -54,7 +59,8 @@ def get_possible(i, j, grid):
     for row in range(i - i%3, i - i%3 + 3):
         for col in range(j - j%3, j - j%3 + 3):
             possible[grid[row][col].val] = False
-            
+    
+    # check numbers from 1 to 9 to see if they are possible
     possible_nums = []
     for num in range(1, 10):
         if possible[num] == True:
@@ -63,7 +69,7 @@ def get_possible(i, j, grid):
     return possible_nums
 
 def solve(grid):   
-    # print_grid(grid)
+    # print_grid(grid)  # for debugging purposes
      
     # get box with minimum moves
     minMoves = float('inf')
@@ -71,7 +77,7 @@ def solve(grid):
     
     for row in grid:
         for spot in row:
-            if spot.val != 0:
+            if spot.val != 0:  # skips filled spots
                 continue
                 
             if len(spot.possible) < minMoves:
@@ -85,9 +91,9 @@ def solve(grid):
     else:
         # recursive process
         for num in minSpot.possible:
-            newGrid = copy.deepcopy(grid)
+            newGrid = copy.deepcopy(grid)  # deepcopy of grid to retain original state
             
-            # update after filling num in spot
+            # update grid after filling num in spot
             newGrid[minSpot.i][minSpot.j].val = num
             newGrid[minSpot.i][minSpot.j].possible = []
             
@@ -117,21 +123,24 @@ def solve(grid):
             if result != None:
                 return result
             
-            del newGrid
+            del newGrid  # ensure unused space is removed
     
     return None
             
             
 
 if __name__ == '__main__':
+    # read from input file
     all_grids = get_grid("./grids/hardest.txt")
     print("Number of grids:", len(all_grids))
     
+    # iterate for all grids
     for grid_num, grid in enumerate(all_grids, 1):
         print(30*"=")
         print(f"Grid {grid_num} (Before Solving):")
         print_grid(grid)
         
+        # initialise possible values in empty spots
         for i in range(9):
             for j in range(9):
                 if grid[i][j].val == 0:
