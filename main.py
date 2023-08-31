@@ -124,7 +124,7 @@ def solve(grid):
             
 
 if __name__ == '__main__':
-    all_grids = get_grid("./grids/easy50.txt")
+    all_grids = get_grid("./grids/hardest.txt")
     print("Number of grids:", len(all_grids))
     
     for grid_num, grid in enumerate(all_grids, 1):
